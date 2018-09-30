@@ -28,26 +28,30 @@ def get_comments(URL,head,delay=2):
         data = json.loads(response.read().decode(encoding))
     return data
 
-def get_data_reddit(search, after=None):
+def search_reddit(search, verbose=False, user=None):
     r = praw.Reddit("tinyvices", user_agent="tinyvices.io")
-    params = {"q": search}
-    if after:
-        params["after"] = "t3_" + str(after.id)
+    # params = {"q": search}
+    # if after:
+        # params["after"] = "t3_" + str(after.id)
+
     fini = praw.models.Subreddit(r,display_name='financialindependence')
     posts = fini.search(search,limit=None)
-    return posts
 
-def search_reddit(search):
-  # search = "daily discussion"
-  posts = get_data_reddit(search)
+    # search = "daily discussion"
+    if user!=None:
+        for comment in r.redditor(user).comments.new(limit=None):
+            pdb.set_trace()
+            print(comment.body.split('\n', 1)[0][:79])
 
-  # pdb.set_trace()
-  cnt=0
+    # pdb.set_trace()
+    cnt=0
 
-  for submission in posts:
+    for submission in posts:
+      if verbose:
+          print(submission.title)
       cnt+=1
 
-  print(cnt)
+    print(cnt)
 
 def parse_json(json_data):
     '''Simple parser for getting reddit comments from JSON output. Returns tuple of JSON comments and list of IDs'''
@@ -190,7 +194,7 @@ if __name__ == '__main__':
           # thread = pickle.load(handle)
 
         # pdb.set_trace()
-      search_reddit(_search, _verbose)
+      search_reddit(_search, _verbose, _user)
     elif _thread:
       getthreadcomments()
     else:
