@@ -1,0 +1,13 @@
+1. beautifulsoup to scrape reddit.com/r/financialindependence/wiki/automoderator-schedule
+2. somehow schedule scrapes based on this
+3. analyzer (optional?) builds data from the scrapes
+4. frontend displays interesting stats?
+
+let's outline an MVP
+- meta stats only: scrape threads as they go, determine things like:
+unique posters
+karma per post
+other basics
+
+for MVP, database will house ALL RAW DATA of all threads from some date
+then the frontend (or analyzer) can start figuring things out from there
