@@ -2,7 +2,6 @@ from urllib2 import Request, urlopen
 from time import sleep
 import json
 import argparse
-import csv
 import praw
 import pdb
 from datetime import datetime

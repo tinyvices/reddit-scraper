@@ -8,6 +8,15 @@ let's outline an MVP
 unique posters
 karma per post
 other basics
+--exact py scripts to 'scrape threads as they go':
+- getAutoModeratorSchedule:
+-   input: subreddit name
+-   output: post to API all info about automoderator threads
+- findThread
+-   input: time, title, submitter, subreddit
 
-for MVP, database will house ALL RAW DATA of all threads from some date
+
+for MVP, database will house ALL RAW DATA of all threads from some date for some subreddit
 then the frontend (or analyzer) can start figuring things out from there
+
+version 2: word clouds?
