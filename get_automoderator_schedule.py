@@ -68,7 +68,7 @@ def storeRule(subreddit, rule, verbose=False):
 
 
     headers = {'Content-type': 'application/json'}
-    response = requests.post("{}/schedules".format(API_URL), data = json.dumps(rule), headers = headers)
+    response = requests.post("{}/schedules/{}".format(API_URL, subreddit), data = json.dumps(rule), headers = headers)
 
     if response.status_code==200:
         print("storeRule: success")
