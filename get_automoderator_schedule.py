@@ -4,6 +4,9 @@ import argparse
 import yaml
 import json
 import re
+import requests
+
+API_URL = "http://localhost:8081/"
 
 def getSchedule(subreddit, verbose):
     if verbose:
@@ -21,8 +24,10 @@ def getSchedule(subreddit, verbose):
     if page:
         print("getSchedule: success")
 
-    rule_defs_json = parseYamlToJson(page.content_md,verbose)
-    storeRules(subreddit, rule_defs_json, verbose)
+    rules = parseYamlToJson(page.content_md,verbose)
+
+    for rule in rules:
+        storeRule(subreddit, rule, verbose)
 
 def parseYamlToJson(yaml_text,verbose=False):
     if verbose:
@@ -31,7 +36,7 @@ def parseYamlToJson(yaml_text,verbose=False):
     yaml_sections = [section.strip("\r\n")
         for section in re.split("^---", yaml_text, flags=re.MULTILINE)]
 
-    rule_defs_json = []
+    rules = []
 
     for section_num, section in enumerate(yaml_sections, 1):
         try:
@@ -43,29 +48,32 @@ def parseYamlToJson(yaml_text,verbose=False):
         # only keep the section if the parsed result is a dict (otherwise
         # it's generally just a comment)
         if isinstance(parsed, dict):
-            rule_defs_json.append(json.dumps(parsed))
+            rules.append(parsed)
 
     if verbose:
-        print("rule_defs_json ({} items): {}".format(len(rule_defs_json),rule_defs_json))
+        print("rules ({} items): {}".format(len(rules),rules))
 
-    if rule_defs_json:
+    if rules:
         print("parseYaml: success")
 
-    return rule_defs_json
+    return rules
 
-def storeRules(subreddit, rule_defs_json, verbose=False):
+def storeRule(subreddit, rule, verbose=False):
     if verbose:
-        print("storeRules: enter")
-
-    success = False
+        print("storeRule: enter")
 
     if verbose:
-        for i, rule in enumerate(rule_defs_json,1):
-            print("rule #{}:\n{}\n".format(i,rule))
-        print("storeRules: attempting API call now")
-        
-    if success:
-        print("storeRules: success")
+        print("rule:\n{}".format(rule))
+        print("storeRule: attempting API call now")
+
+
+    headers = {'Content-type': 'application/json'}
+    response = requests.post("{}/schedules".format(API_URL), data = json.dumps(rule), headers = headers)
+
+    if response.status_code==200:
+        print("storeRule: success")
+    else:
+        print("storeRule: code:{}".format(response.status_code))
 
 if __name__ == '__main__':
     ### Commandline argument handling ###
