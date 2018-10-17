@@ -2,6 +2,7 @@ import praw
 import pdb
 import argparse
 import yaml
+import json
 import re
 
 def getSchedule(subreddit, verbose):
@@ -20,17 +21,17 @@ def getSchedule(subreddit, verbose):
     if page:
         print("getSchedule: success")
 
-    rule_defs = parseYaml(page.content_md,verbose)
-    storeRules(subreddit, rule_defs, verbose)
+    rule_defs_json = parseYamlToJson(page.content_md,verbose)
+    storeRules(subreddit, rule_defs_json, verbose)
 
-def parseYaml(yaml_text,verbose=False):
+def parseYamlToJson(yaml_text,verbose=False):
     if verbose:
         print("parseYaml: enter \r\n")
 
     yaml_sections = [section.strip("\r\n")
         for section in re.split("^---", yaml_text, flags=re.MULTILINE)]
 
-    rule_defs = []
+    rule_defs_json = []
 
     for section_num, section in enumerate(yaml_sections, 1):
         try:
@@ -42,27 +43,27 @@ def parseYaml(yaml_text,verbose=False):
         # only keep the section if the parsed result is a dict (otherwise
         # it's generally just a comment)
         if isinstance(parsed, dict):
-            rule_defs.append(parsed)
+            rule_defs_json.append(json.dumps(parsed))
 
     if verbose:
-        print("rule_defs: {}".format(rule_defs))
+        print("rule_defs_json ({} items): {}".format(len(rule_defs_json),rule_defs_json))
 
-        for rule_num, rule in enumerate(rule_defs, 1):
-            print("Rule {}, title: {}".format(rule_num, rule['title']))
-
-    if rule_defs:
+    if rule_defs_json:
         print("parseYaml: success")
 
-    return rule_defs
+    return rule_defs_json
 
-def storeRules(subreddit, rule_defs, verbose=False):
+def storeRules(subreddit, rule_defs_json, verbose=False):
     if verbose:
         print("storeRules: enter")
 
     success = False
 
-    # POST to API
-
+    if verbose:
+        for i, rule in enumerate(rule_defs_json,1):
+            print("rule #{}:\n{}\n".format(i,rule))
+        print("storeRules: attempting API call now")
+        
     if success:
         print("storeRules: success")
 
