@@ -1,4 +1,4 @@
-1. beautifulsoup to scrape reddit.com/r/financialindependence/wiki/automoderator-schedule
+X1. beautifulsoup to scrape reddit.com/r/financialindependence/wiki/automoderator-schedule
 2. somehow schedule scrapes based on this
 3. analyzer (optional?) builds data from the scrapes
 4. frontend displays interesting stats?

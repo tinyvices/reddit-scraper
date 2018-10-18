@@ -21,7 +21,7 @@ def getThreads(subreddit, fr, to, verbose):
 
         friendlyTitle = re.sub('{.*}', '', schedule['title'])
 
-        friendlyTitle = ''.join(e for e in friendlyTitle if (e.isalnum() or e == ' '))
+        friendlyTitle = ''.join(e for e in friendlyTitle if (e.isalnum() or e == ' ' or e == '-'))
 
         if (verbose): print("Searching on: {}".format(friendlyTitle))
 
@@ -42,8 +42,15 @@ def getSchedule(subreddit, verbose):
     return schedules
 
 def storeThreadInfo(submission, verbose):
+    submission.comments.replace_more(limit=0)
+    for comment in submission.comments:
+        storeComment(comment, verbose)
+
     return ''
-    #TODO: API call
+
+def storeComment(comment, verbose):
+    print(comment.body)
+    return ''
 
 if __name__ == '__main__':
     ### Commandline argument handling ###
