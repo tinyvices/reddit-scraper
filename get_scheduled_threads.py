@@ -21,11 +21,13 @@ def getThreads(subreddit, fr, to, verbose):
 
         friendlyTitle = re.sub('{.*}', '', schedule['title'])
 
+        friendlyTitle = ''.join(e for e in friendlyTitle if (e.isalnum() or e == ' '))
+
         if (verbose): print("Searching on: {}".format(friendlyTitle))
 
-        search = "(title:\"{}\" AND author:AutoModerator)".format(friendlyTitle, )
+        search = "(title:\"{}\" AND author:AutoModerator)".format(friendlyTitle)
 
-        posts = subreddit.search(search,sort='new', syntax='lucene', time_filter='month', limit=1)
+        posts = subreddit.search(search,sort='relevance', syntax='lucene', time_filter='year', limit=1)
 
         if (verbose):
             for submission in posts:
@@ -40,6 +42,7 @@ def getSchedule(subreddit, verbose):
     return schedules
 
 def storeThreadInfo(submission, verbose):
+    return ''
     #TODO: API call
 
 if __name__ == '__main__':
